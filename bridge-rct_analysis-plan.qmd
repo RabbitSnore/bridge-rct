@@ -9,6 +9,11 @@ where relevant, we will compare these two models using a likelihood ratio test
 and retain the better performing model for interpretation. we will use a
 significance threshold of .05 for all tests.
 
+Missing data will not be imputed.
+
+For linear mixed effects models, we will use Satterthwaite degrees of freedom
+for inferential tests for coefficients.
+
 # Study 1b: Bridge
 
 ## Sample size planning
@@ -50,29 +55,18 @@ above used for rated willingness to seek treatment.
 
 ### CSAM usage
 
-Self-reported CSAM usage, measured by the SChiMRA+, will be modeled using a
-mixed-effects model like the one above used for rated willingness to seek
-treatment.
+Self-reported CSAM usage, measured by the SChiMRA+ (total number of reported
+hours per week), will be modeled using a mixed-effects model like the one above
+used for rated willingness to seek treatment.
 
 ### Depression (PHQ-9)
 
-Scores on the PHQ-9 are measured pre-treatment and post-treatment. These scores will be modeled in a series of linear mixed effects models. The first model will use fixed predictors for the treatment
-
-lmm_1b_phq9_base     <- lmer(phq9_sum
-                             ~ 1
-                             + mi_treat
-                             + pre_post
-                             + (1 | id),
-                             data = study_1b)
-
-lmm_1b_phq9_int      <- lmer(phq9_sum
-                             ~ 1
-                             + mi_treat
-                             * pre_post
-                             + (1 | id),
-                             data = study_1b)
-
-lrt_1b_phq9          <- anova(lmm_1b_phq9_base, lmm_1b_phq9_int)
+Scores on the PHQ-9 are measured pre-treatment and post-treatment. These scores
+will be modeled in a series of linear mixed effects models. The first model will
+use fixed predictors for treatment condition and an indicator for the timing of
+the measurement (pre and post), with random intercepts for each participant. The
+second model will add the interaction between the two fixed predictors. We will
+compare the models and retain the better fitting one.
 
 ### Mediating effect of MI on primary outcomes through motivational talk
 
@@ -91,21 +85,8 @@ one above used for rated willingness to seek treatment.
 
 ### Hypersexuality (HBI-19)
 
-lmm_1b_hbi_base      <- lmer(hbi_sum
-                             ~ 1
-                             + mi_treat
-                             + pre_post
-                             + (1 | id),
-                             data = study_1b)
-
-lmm_1b_hbi_int       <- lmer(hbi_sum
-                             ~ 1
-                             + mi_treat
-                             * pre_post
-                             + (1 | id),
-                             data = study_1b)
-
-lrt_1b_hib           <- anova(lmm_1b_hbi_base, lmm_1b_hbi_int)
+Scores on the PHQ-9 are measured pre-treatment and post-treatment. These scores
+will be modeled with an approach like those used for the PHQ-9 scores above.
 
 # Study 2b: ReDirection
 
@@ -115,93 +96,55 @@ lrt_1b_hib           <- anova(lmm_1b_hbi_base, lmm_1b_hbi_int)
 
 ### Sexual urges (SSAS)
 
-lmm_2b_ssas_base     <- lmer(ssas_sum
-                             ~ 1
-                             + rd_treat
-                             + time
-                             + time_after
-                             + (1 | id),
-                             data = study_2b)
+Scores on the SSAS will be modeled with a linear mixed effects model, with a
+dummy coded treatment predictor (0 = waitlist, 1 = MI), indicating whether
+treatment has commenced, a time predictor (starting at 0, and counting each
+weekly measurement point), and a time-since-treatment predictor (starting at 0,
+and counting up at each measurement point after treatment begins). The treatment
+coefficient represents the immediate effect of commencing the treatment. The
+time predictor captures the overall linear effect of the passage of time in the
+study, and the time-since-treatment coefficient captures the linear effect of
+spending time in the treatment.
 
 ### CSAM usage
 
-lmm_2b_csam_base     <- lmer(csam_sum
-                             ~ 1
-                             + rd_treat
-                             + time
-                             + time_after
-                             + (1 | id),
-                             data = study_2b)
+Self-reported CSAM usage will be modeled using a mixed-effects model like the
+one above used for SSAS scores.
 
 ### SChiMRA B (Behaviors against children)
 
 #### Socialize
 
-lmm_2b_csam_base     <- lmer(socialize_sum
-                             ~ 1
-                             + rd_treat
-                             + time
-                             + time_after
-                             + (1 | id),
-                             data = study_2b)
+Self-reported socialization with children (total number of hours in the last
+week) will be modeled using a mixed-effects model like the one above used for
+SSAS scores.
 
 #### Interact
 
-lmm_2b_interact_base <- lmer(interact_sum
-                             ~ 1
-                             + rd_treat
-                             + time
-                             + time_after
-                             + (1 | id),
-                             data = study_2b)
+Self-reported interacting with children (total number of hours in the last
+week) will be modeled using a mixed-effects model like the one above used for
+SSAS scores.
 
 ### Depression (PHQ-9)
 
-lmm_2b_phq9_base     <- lmer(phq9_sum
-                             ~ 1
-                             + rd_treat
-                             + pre_post
-                             + (1 | id),
-                             data = study_1b)
-
-lmm_2b_phq9_int      <- lmer(phq9_sum
-                             ~ 1
-                             + rd_treat
-                             * pre_post
-                             + (1 | id),
-                             data = study_1b)
-
-lrt_2b_phq9          <- anova(lmm_2b_phq9_base, lmm_2b_phq9_int)
+Scores on the PHQ-9 are measured pre-treatment and post-treatment. These scores
+will be modeled in a series of linear mixed effects models. The first model will
+use fixed predictors for treatment condition and an indicator for the timing of
+the measurement (pre and post), with random intercepts for each participant. The
+second model will add the interaction between the two fixed predictors. We will
+compare the models and retain the better fitting one.
 
 ## Secondary analyses
 
 ### Dynamic risk (ACUTE-2007)
 
-lmm_2b_risk_base     <- lmer(acute_2007_sum
-                             ~ 1
-                             + rd_treat
-                             + time
-                             + time_after
-                             + (1 | id),
-                             data = study_2b)
+Scores on the ACUTE-2007 will be modeled using a mixed-effects model like the
+one above used for SSAS scores.
 
 ### Hypersexuality (HBI-19)
 
-lmm_2b_hbi_base      <- lmer(hbi_sum
-                             ~ 1
-                             + rd_treat
-                             + pre_post
-                             + (1 | id),
-                             data = study_2b)
-
-lmm_2b_hbi_int       <- lmer(hbi_sum
-                             ~ 1
-                             + rd_treat
-                             * pre_post
-                             + (1 | id),
-                             data = study_2b)
-
-lrt_2b_hib           <- anova(lmm_2b_hbi_base, lmm_2b_hbi_int)
+Scores on the PHQ-9 are measured pre-treatment and post-treatment. These scores
+will be modeled with an approach like those used for the PHQ-9 scores above.
 
 ### Mediating effect of treatment on CSAM usage through sexual urges (SSAS)
 

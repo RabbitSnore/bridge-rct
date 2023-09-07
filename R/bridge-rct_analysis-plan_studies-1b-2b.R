@@ -6,7 +6,7 @@
 
 # Set up environment -----------------------------------------------------------
 
-packages <- c("tidyverse", "readxl", "lme4")
+packages <- c("tidyverse", "readxl", "lme4", "lmerTest")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -125,12 +125,41 @@ lrt_1b_phq9          <- anova(lmm_1b_phq9_base, lmm_1b_phq9_int)
 
 ### Mediating effect of MI on primary outcomes through motivational talk
 
+# a paths
+
+lmm_1b_motive_a      <- lmer(motivational_talk
+                             ~ 1
+                             + mi_treat
+                             + time
+                             + time_after
+                             + (1 | id),
+                             data = study_1b)
+
 #### Willingness to seek treatment
 
+# b paths
 
+lmm_1b_seekcare_b    <- lmer(treat_seeking
+                             ~ 1
+                             + mi_treat
+                             + time
+                             + time_after
+                             + motivational_talk
+                             + (1 | id),
+                             data = study_1b)
 
 #### Motivation for change
 
+# b paths
+
+lmm_1b_change_b      <- lmer(change_sum
+                             ~ 1
+                             + mi_treat
+                             + time
+                             + time_after
+                             + motivational_talk
+                             + (1 | id),
+                             data = study_1b)
 
 
 ### Dynamic risk (ACUTE-2007)
