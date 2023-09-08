@@ -5,6 +5,9 @@ format: pdf
 
 # Overview
 
+This document describes the statistical analysis plan for the MI Bridge trial
+and the ReDirection trial.
+
 where relevant, we will compare these two models using a likelihood ratio test
 and retain the better performing model for interpretation. we will use a
 significance threshold of .05 for all tests.
@@ -13,6 +16,9 @@ Missing data will not be imputed.
 
 For linear mixed effects models, we will use Satterthwaite degrees of freedom
 for inferential tests for coefficients.
+
+This document provides verbal descriptions for the planned analyses, and the
+accompanying R script provides the base code that will be used for the analyses.
 
 # Study 1b: Bridge
 
@@ -70,13 +76,18 @@ compare the models and retain the better fitting one.
 
 ### Mediating effect of MI on primary outcomes through motivational talk
 
-#### Willingness to seek treatment
-
-
-
-#### Motivation for change
-
-
+We will examine the potential mediating role of motivational talk on willingness
+to seek care and motivation to change. To do so, we will take a mixed effects
+longitudinal mediation approach (similar to that of Park et al, 2017,
+10.1037/dev0000235), wherein we will fit mixed effects models predicting the
+mediator and outcome variables using  dummy coded treatment predictor (0 =
+waitlist, 1 = MI), indicating whether treatment has commenced, a time predictor
+(starting at 0, and counting each weekly measurement point), and a
+time-since-treatment predictor (starting at 0, and counting up at each
+measurement point after treatment begins). We will then estimate the indirect
+effect of time-since-treatment through motivational talk on the outcome
+variables, using parametric bootstrapping. The mediator will be person mean
+centered for these models, in order to capture the within-person effects.
 
 ### Dynamic risk (ACUTE-2007)
 
@@ -96,15 +107,15 @@ will be modeled with an approach like those used for the PHQ-9 scores above.
 
 ### Sexual urges (SSAS)
 
-Scores on the SSAS will be modeled with a linear mixed effects model, with a
-dummy coded treatment predictor (0 = waitlist, 1 = MI), indicating whether
-treatment has commenced, a time predictor (starting at 0, and counting each
-weekly measurement point), and a time-since-treatment predictor (starting at 0,
-and counting up at each measurement point after treatment begins). The treatment
-coefficient represents the immediate effect of commencing the treatment. The
-time predictor captures the overall linear effect of the passage of time in the
-study, and the time-since-treatment coefficient captures the linear effect of
-spending time in the treatment.
+scores on the ssas will be modeled with a linear mixed effects model, with a
+dummy coded treatment predictor (0 = waitlist, 1 = redirection), indicating
+whether treatment has commenced, a time predictor (starting at 0, and counting
+each weekly measurement point), and a time-since-treatment predictor (starting
+at 0, and counting up at each measurement point after treatment begins). the
+treatment coefficient represents the immediate effect of commencing the
+treatment. the time predictor captures the overall linear effect of the passage
+of time in the study, and the time-since-treatment coefficient captures the
+linear effect of spending time in the treatment.
 
 ### CSAM usage
 
@@ -148,3 +159,15 @@ will be modeled with an approach like those used for the PHQ-9 scores above.
 
 ### Mediating effect of treatment on CSAM usage through sexual urges (SSAS)
 
+We will examine the potential mediating role of sexual urges on the use of CSAM.
+To do so, we will take a mixed effects longitudinal mediation approach (similar
+to that of Park et al, 2017, 10.1037/dev0000235), wherein we will fit mixed
+effects models predicting the mediator and outcome variables using  dummy coded
+treatment predictor (0 = waitlist, 1 = ReDirection), indicating whether
+treatment has commenced, a time predictor (starting at 0, and counting each
+weekly measurement point), and a time-since-treatment predictor (starting at 0,
+and counting up at each measurement point after treatment begins). We will then
+estimate the indirect effect of time-since-treatment through motivational talk
+on the outcome variables, using parametric bootstrapping. The mediator will be
+person mean centered for these models, in order to capture the within-person
+effects.

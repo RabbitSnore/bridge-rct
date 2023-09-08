@@ -1,52 +1,18 @@
 ################################################################################
 
-# 
+# Bridge RCT - Analysis Plan
 
 ################################################################################
 
 # Set up environment -----------------------------------------------------------
 
-packages <- c("tidyverse", "readxl", "lme4", "lmerTest")
+packages <- c("tidyverse", "readxl", "lme4", "lmerTest", "lmeresampler")
 
 lapply(packages, library, character.only = TRUE)
 
 # Load data --------------------------------------------------------------------
 
-# Pilot data
-
-# Load pilot data session by session and then stitch it together
-
-pilot_01 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("B:FF"))
-
-pilot_02 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("FH:LH"))
-
-pilot_03 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("LJ:RJ"))
-
-pilot_04 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("RL:XL"))
-
-pilot_05 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("XN:ADN"))
-
-pilot_06 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("ADP:AKX"))
-
-pilot_07 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("AKZ:ASH"))
-
-pilot <- bind_rows(pilot_01, 
-                   pilot_02,
-                   pilot_03,
-                   pilot_04,
-                   pilot_05,
-                   pilot_06)
-
 # Study 1b ---------------------------------------------------------------------
-
-## Sample size planning
 
 ## Primary analyses
 
@@ -225,8 +191,6 @@ lrt_1b_hib           <- anova(lmm_1b_hbi_base, lmm_1b_hbi_int)
 
 # Study 2b ---------------------------------------------------------------------
 
-## Sample size planning
-
 ## Primary analyses
 
 ### Sexual urges (SSAS)
@@ -254,12 +218,12 @@ lmm_2b_csam_base     <- lmer(csam_sum
 #### Socialize
 
 lmm_2b_social_base     <- lmer(socialize_sum
-                             ~ 1
-                             + rd_treat
-                             + time
-                             + time_after
-                             + (1 | id),
-                             data = study_2b)
+                               ~ 1
+                               + rd_treat
+                               + time
+                               + time_after
+                               + (1 | id),
+                               data = study_2b)
 
 #### Interact
 
@@ -333,13 +297,13 @@ lmm_csam_a       <- lmer(ssas_sum_pmc # Person mean centered
                          data = study_1b)
 
 lmm_csam_b       <- lmer(csam_sum
-                             ~ 1
-                             + rd_treat
-                             + time
-                             + time_after
-                             + ssas_sum_pmc
-                             + (1 | id),
-                             data = study_1b)
+                         ~ 1
+                         + rd_treat
+                         + time
+                         + time_after
+                         + ssas_sum_pmc
+                         + (1 | id),
+                         data = study_1b)
 
 #### Bootstrapping coefficients
 
