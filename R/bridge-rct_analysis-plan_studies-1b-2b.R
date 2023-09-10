@@ -6,7 +6,7 @@
 
 # Set up environment -----------------------------------------------------------
 
-packages <- c("tidyverse", "readxl", "lme4", "lmerTest")
+packages <- c("tidyverse", "readxl", "lme4", "lmerTest", "janitor")
 
 lapply(packages, library, character.only = TRUE)
 
@@ -19,30 +19,146 @@ lapply(packages, library, character.only = TRUE)
 pilot_01 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
                       range = cell_cols("B:FF"))
 
+pilot_01 <- clean_names(pilot_01)
+
+pilot_01$waitlist    <- as.numeric(str_detect(pilot_01$groups, "WAITLIST"))
+pilot_01$treatment   <- as.numeric(str_detect(pilot_01$groups, "TREATMENT"))
+pilot_01$bridge      <- as.numeric(str_detect(pilot_01$groups, "Bridge"))
+pilot_01$redirection <- as.numeric(str_detect(pilot_01$groups, "ReDirection"))
+pilot_01$visit       <- 1
+
+pilot_01$motivation <- pilot_01$motivation_to_seek_care_151
+
+pilot_01_clean <- pilot_01 %>% 
+  select(
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+  )
+
 pilot_02 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
                       range = cell_cols("FH:LH"))
+
+pilot_02 <- clean_names(pilot_05)
+
+pilot_02$waitlist    <- as.numeric(str_detect(pilot_02$groups, "WAITLIST"))
+pilot_02$treatment   <- as.numeric(str_detect(pilot_02$groups, "TREATMENT"))
+pilot_02$bridge      <- as.numeric(str_detect(pilot_02$groups, "Bridge"))
+pilot_02$redirection <- as.numeric(str_detect(pilot_02$groups, "ReDirection"))
+pilot_02$visit       <- 2
+
+pilot_02$motivation <- pilot_02$motivation_to_seek_care_156
+
+pilot_02_clean <- pilot_02 %>% 
+  select(
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+  )
 
 pilot_03 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
                       range = cell_cols("LJ:RJ"))
 
+pilot_03 <- clean_names(pilot_03)
+
+pilot_03$waitlist    <- as.numeric(str_detect(pilot_03$groups, "WAITLIST"))
+pilot_03$treatment   <- as.numeric(str_detect(pilot_03$groups, "TREATMENT"))
+pilot_03$bridge      <- as.numeric(str_detect(pilot_03$groups, "Bridge"))
+pilot_03$redirection <- as.numeric(str_detect(pilot_03$groups, "ReDirection"))
+pilot_03$visit       <- 3
+
+pilot_03$motivation <- pilot_03$motivation_to_seek_care_156
+
+pilot_03_clean <- pilot_03 %>% 
+  select(
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+  )
+
 pilot_04 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
                       range = cell_cols("RL:XL"))
+
+pilot_04 <- clean_names(pilot_04)
+
+pilot_04$waitlist    <- as.numeric(str_detect(pilot_04$groups, "WAITLIST"))
+pilot_04$treatment   <- as.numeric(str_detect(pilot_04$groups, "TREATMENT"))
+pilot_04$bridge      <- as.numeric(str_detect(pilot_04$groups, "Bridge"))
+pilot_04$redirection <- as.numeric(str_detect(pilot_04$groups, "ReDirection"))
+pilot_04$visit       <- 4
+
+pilot_04$motivation <- pilot_04$motivation_to_seek_care_156
+
+pilot_04_clean <- pilot_04 %>% 
+  select(
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+  )
 
 pilot_05 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
                       range = cell_cols("XN:ADN"))
 
+pilot_05 <- clean_names(pilot_05)
+
+pilot_05$waitlist    <- as.numeric(str_detect(pilot_05$groups, "WAITLIST"))
+pilot_05$treatment   <- as.numeric(str_detect(pilot_05$groups, "TREATMENT"))
+pilot_05$bridge      <- as.numeric(str_detect(pilot_05$groups, "Bridge"))
+pilot_05$redirection <- as.numeric(str_detect(pilot_05$groups, "ReDirection"))
+pilot_05$visit       <- 5
+
+pilot_05$motivation <- pilot_05$motivation_to_seek_care_156
+
+pilot_05_clean <- pilot_05 %>% 
+  select(
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+  )
+
 pilot_06 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
                       range = cell_cols("ADP:AKX"))
+
+pilot_06 <- clean_names(pilot_06)
+
+pilot_06$waitlist    <- as.numeric(str_detect(pilot_06$groups, "WAITLIST"))
+pilot_06$treatment   <- as.numeric(str_detect(pilot_06$groups, "TREATMENT"))
+pilot_06$bridge      <- as.numeric(str_detect(pilot_06$groups, "Bridge"))
+pilot_06$redirection <- as.numeric(str_detect(pilot_06$groups, "ReDirection"))
+pilot_06$visit       <- 6
+
+pilot_06$motivation <- pilot_06$motivation_to_seek_care_190
+
+pilot_06_clean <- pilot_06 %>% 
+  select(
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+  )
 
 pilot_07 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
                       range = cell_cols("AKZ:ASH"))
 
-pilot <- bind_rows(pilot_01, 
-                   pilot_02,
-                   pilot_03,
-                   pilot_04,
-                   pilot_05,
-                   pilot_06)
+pilot_07 <- clean_names(pilot_07)
+
+pilot_07$waitlist    <- as.numeric(str_detect(pilot_07$groups, "WAITLIST"))
+pilot_07$treatment   <- as.numeric(str_detect(pilot_07$groups, "TREATMENT"))
+pilot_07$bridge      <- as.numeric(str_detect(pilot_07$groups, "Bridge"))
+pilot_07$redirection <- as.numeric(str_detect(pilot_07$groups, "ReDirection"))
+pilot_07$visit       <- 7
+
+pilot_07$motivation <- pilot_07$motivation_to_seek_care_190
+
+pilot_07_clean <- pilot_07 %>% 
+  select(
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+  )
+
+pilot <- bind_rows(pilot_01_clean, 
+                   pilot_02_clean,
+                   pilot_03_clean,
+                   pilot_04_clean,
+                   pilot_05_clean,
+                   pilot_06_clean,
+                   pilot_07_clean)
+
+pilot_clean <- pilot %>% 
+  filter(complete.cases(motivation)) %>% 
+  filter(study_code != "1032tphf")
+
+bridge <- pilot_clean %>% 
+  filter(bridge == 1)
+
+redirection <- pilot_clean %>% 
+  filter(redirection == 1)
 
 # Study 1b ---------------------------------------------------------------------
 
@@ -191,9 +307,9 @@ boot_change_indirect <-
 
 #### Percentile confidence interval
 
-boot_seekcare_ci_perc <- quantile(boot_seekcare_indirect, c(.025, .975))
+boot_seekcare_ci_perc <- quantile(boot_seekcare_indirect, c(.055, .975))
 
-boot_change_ci_perc   <- quantile(boot_change_indirect, c(.025, .975))
+boot_change_ci_perc   <- quantile(boot_change_indirect, c(.055, .975))
 
 ### Dynamic risk (ACUTE-2007)
 
@@ -358,4 +474,4 @@ boot_csam_indirect <-
 
 #### Percentile confidence interval
 
-boot_csam_ci_perc <- quantile(boot_csam_indirect, c(.025, .975))
+boot_csam_ci_perc <- quantile(boot_csam_indirect, c(.055, .975))

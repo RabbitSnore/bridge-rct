@@ -3,6 +3,16 @@ title: "Bridge Project - Data Analysis Plan"
 format: pdf
 ---
 
+```{r}
+#| include: false
+
+library(simr)
+
+power_simulation <- readRDS("./output/bridge-rct_power-sim.rds")
+
+```
+
+
 # Overview
 
 This document describes the statistical analysis plan for the MI Bridge trial
@@ -20,9 +30,23 @@ for inferential tests for coefficients.
 This document provides verbal descriptions for the planned analyses, and the
 accompanying R script provides the base code that will be used for the analyses.
 
-# Study 1b: Bridge
+# Sample size planning
 
-## Sample size planning
+Based on the rate of recruitment in a pilot study, we estimate that each of the
+two planned studies will be able to recruit approximately N = 60 participants.
+To assess the statistical power of the planned studies, we conducted a
+simulation based on the variance in the main outcome variable measured in the
+pilot study.
+
+This simulation suggests that with the present design, the studies would have
+approximately 84% power to detect a relatively small effect of b = 0.20.
+
+```{r}
+power_simulation
+```
+
+
+# Study 1b: Bridge
 
 ## Primary analyses
 
