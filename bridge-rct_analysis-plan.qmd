@@ -9,6 +9,7 @@ format: pdf
 library(simr)
 
 power_simulation <- readRDS("./output/bridge-rct_power-sim.rds")
+power_simulation_ssas <- readRDS("./output/bridge-rct_ssas_power-sim.rds")
 
 ```
 
@@ -22,7 +23,8 @@ where relevant, we will compare these two models using a likelihood ratio test
 and retain the better performing model for interpretation. we will use a
 significance threshold of .05 for all tests.
 
-Missing data will not be imputed.
+Missing data will not be imputed. We will use all valid data from participants,
+including those who drop out of the study.
 
 For linear mixed effects models, we will use Satterthwaite degrees of freedom
 for inferential tests for coefficients.
@@ -32,19 +34,42 @@ accompanying R script provides the base code that will be used for the analyses.
 
 # Sample size planning
 
-Based on the rate of recruitment in a pilot study, we estimate that each of the
-two planned studies will be able to recruit approximately N = 60 participants.
-To assess the statistical power of the planned studies, we conducted a
-simulation based on the variance in the main outcome variable measured in the
-pilot study.
+Based on the rate of recruitment in a pilot study, we estimate that it will be
+feasible for each of the two planned studies to recruit approximately N = 60
+participants. To assess the statistical power of the planned studies, using this
+sample size, we conducted a simulation based on the variance in the main outcome
+variables measured in the pilot study (specifically, motivation to seek care and
+SSAS sum scores). In these simulations, we assessed the primary model used to
+examine this outcome measure (described below).
 
-This simulation suggests that with the present design, the studies would have
-approximately 84% power to detect a relatively small effect of b = 0.20.
+The simulation addressing motivation to seek care suggests that with the
+present design, the study would have approximately 83% power to detect a
+relatively small effect of b = 0.25 for the effect of time spent in treatment.
 
 ```{r}
 power_simulation
 ```
 
+In short, the planned study will have adequate power for modestly sized
+effects on motivation to seek care (primary outcome in Study 1b).
+
+The simulation addressing SSAS sum scores suggests that with the present design,
+the studies would have approximately 98% power to detect a relatively small
+effect of b = 1.50 for the effect of time spent in treatment.
+
+```{r}
+power_simulation_ssas
+```
+
+In short, the planned studies will have adequate power for modestly sized
+effects on motivation to seek care (primary outcome in Study 2b and a secondary
+outcome in Study 1b).
+
+We will recruit participants until we have reached a total of N = 60 non-dropout
+participants for each study (Study 1b and Study 2b). For Study 1b, we define a
+"dropout" as someone who takes part in fewer than 2 weekly measurements. For
+Study 2b, we define a "dropout" as someone who takes part in fewer than 3 weekly
+measures.
 
 # Study 1b: Bridge
 
@@ -93,23 +118,25 @@ used for rated willingness to seek treatment.
 
 Scores on the PHQ-9 are measured pre-treatment and post-treatment. These scores
 will be modeled in a series of linear mixed effects models. The first model will
-use fixed predictors for treatment condition and an indicator for the timing of
+model fixed effects for treatment condition and an indicator for the timing of
 the measurement (pre and post), with random intercepts for each participant. The
-second model will add the interaction between the two fixed predictors. We will
-compare the models and retain the better fitting one.
+second model will add the interaction between the two fixed effects (i.e.,
+condition and timing of measurement). We will compare the models and retain the
+better fitting one.
 
-### Mediating effect of MI on primary outcomes through motivational talk
+### Mediating effect of MI on motivation to seek treatment through motivation to change
 
-We will examine the potential mediating role of motivational talk on willingness
-to seek care and motivation to change. To do so, we will take a mixed effects
-longitudinal mediation approach (similar to that of Park et al, 2017,
-10.1037/dev0000235), wherein we will fit mixed effects models predicting the
-mediator and outcome variables using  dummy coded treatment predictor (0 =
-waitlist, 1 = MI), indicating whether treatment has commenced, a time predictor
-(starting at 0, and counting each weekly measurement point), and a
-time-since-treatment predictor (starting at 0, and counting up at each
+We will examine the potential mediating role of motivation to change (Change
+Questionnaire) on willingness to seek care and whether the participants
+indicates they are likely to actually seek care (dichotomous). To do so, we will
+take a mixed effects longitudinal mediation approach (similar to that of Park et
+al, 2017, 10.1037/dev0000235), wherein we will fit mixed effects models
+predicting the mediator and outcome variables using  dummy coded treatment
+predictor (0 = waitlist, 1 = MI), indicating whether treatment has commenced, a
+time predictor (starting at 0, and counting each weekly measurement point), and
+a time-since-treatment predictor (starting at 0, and counting up at each
 measurement point after treatment begins). We will then estimate the indirect
-effect of time-since-treatment through motivational talk on the outcome
+effect of time-since-treatment through motivation to change on the outcome
 variables, using parametric bootstrapping. The mediator will be person mean
 centered for these models, in order to capture the within-person effects.
 
@@ -120,7 +147,7 @@ one above used for rated willingness to seek treatment.
 
 ### Hypersexuality (HBI-19)
 
-Scores on the PHQ-9 are measured pre-treatment and post-treatment. These scores
+Scores on the HBI-19 are measured pre-treatment and post-treatment. These scores
 will be modeled with an approach like those used for the PHQ-9 scores above.
 
 # Study 2b: ReDirection
@@ -131,7 +158,7 @@ will be modeled with an approach like those used for the PHQ-9 scores above.
 
 ### Sexual urges (SSAS)
 
-scores on the ssas will be modeled with a linear mixed effects model, with a
+scores on the SSAS will be modeled with a linear mixed effects model, with a
 dummy coded treatment predictor (0 = waitlist, 1 = redirection), indicating
 whether treatment has commenced, a time predictor (starting at 0, and counting
 each weekly measurement point), and a time-since-treatment predictor (starting
@@ -191,7 +218,6 @@ treatment predictor (0 = waitlist, 1 = ReDirection), indicating whether
 treatment has commenced, a time predictor (starting at 0, and counting each
 weekly measurement point), and a time-since-treatment predictor (starting at 0,
 and counting up at each measurement point after treatment begins). We will then
-estimate the indirect effect of time-since-treatment through motivational talk
-on the outcome variables, using parametric bootstrapping. The mediator will be
-person mean centered for these models, in order to capture the within-person
-effects.
+estimate the indirect effect of time-since-treatment through SSAS scores on CSAM
+usage, using parametric bootstrapping. The mediator will be person mean centered
+for these models, in order to capture the within-person effects.

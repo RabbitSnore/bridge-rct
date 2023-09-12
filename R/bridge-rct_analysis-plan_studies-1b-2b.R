@@ -16,8 +16,8 @@ lapply(packages, library, character.only = TRUE)
 
 # Load pilot data session by session and then stitch it together
 
-pilot_01 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("B:FF"))
+pilot_01 <- read_xlsx("data/Bridge_surveys_230912_094736.xlsx",
+                      range = cell_cols("B:GJ"))
 
 pilot_01 <- clean_names(pilot_01)
 
@@ -27,17 +27,17 @@ pilot_01$bridge      <- as.numeric(str_detect(pilot_01$groups, "Bridge"))
 pilot_01$redirection <- as.numeric(str_detect(pilot_01$groups, "ReDirection"))
 pilot_01$visit       <- 1
 
-pilot_01$motivation <- pilot_01$motivation_to_seek_care_151
+pilot_01$motivation <- pilot_01$motivation_to_seek_care_181
 
 pilot_01_clean <- pilot_01 %>% 
   select(
-    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation, ssas_sum
   )
 
-pilot_02 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("FH:LH"))
+pilot_02 <- read_xlsx("data/Bridge_surveys_230912_094736.xlsx",
+                      range = cell_cols("GL:ML"))
 
-pilot_02 <- clean_names(pilot_05)
+pilot_02 <- clean_names(pilot_02)
 
 pilot_02$waitlist    <- as.numeric(str_detect(pilot_02$groups, "WAITLIST"))
 pilot_02$treatment   <- as.numeric(str_detect(pilot_02$groups, "TREATMENT"))
@@ -49,11 +49,11 @@ pilot_02$motivation <- pilot_02$motivation_to_seek_care_156
 
 pilot_02_clean <- pilot_02 %>% 
   select(
-    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation, ssas_sum
   )
 
-pilot_03 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("LJ:RJ"))
+pilot_03 <- read_xlsx("data/Bridge_surveys_230912_094736.xlsx",
+                      range = cell_cols("MN:SN"))
 
 pilot_03 <- clean_names(pilot_03)
 
@@ -67,11 +67,11 @@ pilot_03$motivation <- pilot_03$motivation_to_seek_care_156
 
 pilot_03_clean <- pilot_03 %>% 
   select(
-    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation, ssas_sum
   )
 
-pilot_04 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("RL:XL"))
+pilot_04 <- read_xlsx("data/Bridge_surveys_230912_094736.xlsx",
+                      range = cell_cols("SP:YP"))
 
 pilot_04 <- clean_names(pilot_04)
 
@@ -85,11 +85,11 @@ pilot_04$motivation <- pilot_04$motivation_to_seek_care_156
 
 pilot_04_clean <- pilot_04 %>% 
   select(
-    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation, ssas_sum
   )
 
-pilot_05 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("XN:ADN"))
+pilot_05 <- read_xlsx("data/Bridge_surveys_230912_094736.xlsx",
+                      range = cell_cols("YR:AER"))
 
 pilot_05 <- clean_names(pilot_05)
 
@@ -103,11 +103,11 @@ pilot_05$motivation <- pilot_05$motivation_to_seek_care_156
 
 pilot_05_clean <- pilot_05 %>% 
   select(
-    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation, ssas_sum
   )
 
-pilot_06 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("ADP:AKX"))
+pilot_06 <- read_xlsx("data/Bridge_surveys_230912_094736.xlsx",
+                      range = cell_cols("AET:AMB"))
 
 pilot_06 <- clean_names(pilot_06)
 
@@ -121,11 +121,11 @@ pilot_06$motivation <- pilot_06$motivation_to_seek_care_190
 
 pilot_06_clean <- pilot_06 %>% 
   select(
-    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation, ssas_sum
   )
 
-pilot_07 <- read_xlsx("data/Bridge_surveys_230906_152943.xlsx",
-                      range = cell_cols("AKZ:ASH"))
+pilot_07 <- read_xlsx("data/Bridge_surveys_230912_094736.xlsx",
+                      range = cell_cols("AMD:ATL"))
 
 pilot_07 <- clean_names(pilot_07)
 
@@ -139,7 +139,7 @@ pilot_07$motivation <- pilot_07$motivation_to_seek_care_190
 
 pilot_07_clean <- pilot_07 %>% 
   select(
-    study_code, waitlist, treatment, bridge, redirection, visit, motivation
+    study_code, waitlist, treatment, bridge, redirection, visit, motivation, ssas_sum
   )
 
 pilot <- bind_rows(pilot_01_clean, 
@@ -151,14 +151,54 @@ pilot <- bind_rows(pilot_01_clean,
                    pilot_07_clean)
 
 pilot_clean <- pilot %>% 
-  filter(complete.cases(motivation)) %>% 
-  filter(study_code != "1032tphf")
+  filter(complete.cases(motivation))
 
 bridge <- pilot_clean %>% 
   filter(bridge == 1)
 
 redirection <- pilot_clean %>% 
   filter(redirection == 1)
+
+# Wrangle for simulation
+
+bridge <- bridge %>% 
+  arrange(by = study_code) %>% 
+  group_by(study_code) %>% 
+  mutate(
+    time       = 1:n(),
+    time_after = case_when(
+      waitlist == 0 ~ time,
+      waitlist == 1 ~ time - 3
+    ),
+    time_after = case_when(
+      time_after >= 0 ~ time_after,
+      time_after <  0 ~ 0
+    ),
+    mi_treat = case_when(
+      time_after >  0 ~ 1,
+      time_after == 0 ~ 0
+    )
+  )
+
+redirection <- redirection %>% 
+  arrange(by = study_code) %>% 
+  group_by(study_code) %>% 
+  mutate(
+    time       = 1:n(),
+    time_after = case_when(
+      waitlist == 0 ~ time,
+      waitlist == 1 ~ time - 3
+    ),
+    time_after = case_when(
+      time_after >= 0 ~ time_after,
+      time_after <  0 ~ 0
+    ),
+    mi_treat = case_when(
+      time_after >  0 ~ 1,
+      time_after == 0 ~ 0
+    )
+  )
+
 
 # Study 1b ---------------------------------------------------------------------
 

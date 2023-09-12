@@ -6,14 +6,13 @@
 
 # Set up environment -----------------------------------------------------------
 
-packages <- c("tidyverse", "readxl", "lme4", "lmerTest", "lmeresampler")
+packages <- c("tidyverse", "readxl", "lme4", "lmerTest", "lmeresampler", "simr")
 
 lapply(packages, library, character.only = TRUE)
 
 # Load data --------------------------------------------------------------------
 
 # Power analysis ---------------------------------------------------------------
-
 
 # Design
 
@@ -40,22 +39,22 @@ treat_structure <- data.frame(
 
 # Power simulation -------------------------------------------------------------
 
-# Primary outcome
+# Motivation to seek care
 
 ## Fixed and random effects
 
 fixed_design <- c(
   0.00,  # intercept
-  0.20,  # treatment 
-  0.00,  # time 
-  0.20   # time_after
+  0.00,  # treatment 
+  0.25,  # time 
+  0.25   # time_after
 )
 
 varcor_design <- list(
-  1.00
+  1.50
 )
 
-sigma_design <- 1.20
+sigma_design <- 1.60
 
 ## Simulated data set without outcome variable
 
@@ -95,7 +94,7 @@ if (!file.exists("./output/bridge-rct_power-sim.rds")) {
     fit = design_lmm,
     test = fixed("time_after", method = "t"),
     nsim = 1000,
-    seed = 8989
+    seed = 1978
   )
   
   saveRDS(power_simulation, "./output/bridge-rct_power-sim.rds")
@@ -103,6 +102,55 @@ if (!file.exists("./output/bridge-rct_power-sim.rds")) {
 } else {
   
   power_simulation <- readRDS("./output/bridge-rct_power-sim.rds")
+  
+}
+
+# SSAS
+
+fixed_design_ssas <- c(
+  0.00,  # intercept
+  0.00,  # treatment 
+  0.25,  # time 
+  1.50   # time_after
+)
+
+varcor_design_ssas <- list(
+  16.50
+)
+
+sigma_design_ssas <- 7.60
+
+## Simulated model
+
+design_lmm_ssas <- makeLmer(
+  formula =
+    treat_seeking
+  ~ 1
+  + treatment
+  + time
+  + time_after
+  + (1 | id),
+  fixef   = fixed_design_ssas,
+  VarCorr = varcor_design_ssas,
+  sigma   = sigma_design_ssas,
+  data    = data_design)
+
+## Simulation
+
+if (!file.exists("./output/bridge-rct_ssas_power-sim.rds")) {
+  
+  power_simulation_ssas <- powerSim(
+    fit = design_lmm_ssas,
+    test = fixed("time_after", method = "t"),
+    nsim = 1000,
+    seed = 1978
+  )
+  
+  saveRDS(power_simulation_ssas, "./output/bridge-rct_ssas_power-sim.rds")
+  
+} else {
+  
+  power_simulation_ssas <- readRDS("./output/bridge-rct_ssas_power-sim.rds")
   
 }
 
@@ -183,11 +231,11 @@ lmm_1b_phq9_int      <- lmer(phq9_sum
 
 lrt_1b_phq9          <- anova(lmm_1b_phq9_base, lmm_1b_phq9_int)
 
-### Mediating effect of MI on primary outcomes through motivational talk
+### Mediating effect of MI on seeking care through motivation to change
 
 #### Rated willingness to seek treatment - a and b path models
 
-lmm_seekcare_a       <- lmer(motivational_talk_pmc # Person mean centered
+lmm_seekcare_a       <- lmer(change_sum_pmc # Person mean centered
                              ~ 1
                              + mi_treat
                              + time
@@ -200,60 +248,53 @@ lmm_seekcare_b       <- lmer(treat_seeking
                              + mi_treat
                              + time
                              + time_after
-                             + motivational_talk_pmc
+                             + change_sum_pmc
                              + (1 | id),
                              data = study_1b)
 
 #### Motivation for change - a and b path models
 
-lmm_change_a         <- lmer(motivational_talk_pmc
+glmm_seekcare_b     <- glmer(treat_seeking_01
                              ~ 1
                              + mi_treat
                              + time
                              + time_after
+                             + change_sum_pmc
                              + (1 | id),
-                             data = study_1b)
-
-lmm_change_b         <- lmer(change_sum
-                             ~ 1
-                             + mi_treat
-                             + time
-                             + time_after
-                             + motivational_talk_pmc
-                             + (1 | id),
-                             data = study_1b)
+                             data = study_1b,
+                             family = binomial(link = "logit"))
 
 #### Bootstrapping coefficients
 
 set.seed(9998)
 
-boot_seekcare_a <- bootstrap(lmm_seekcare_a, fixef, type = "parametric", B = 10000)
+boot_seekcare_a   <- bootstrap(lmm_seekcare_a, fixef, type = "parametric", B = 10000)
 
 set.seed(9998)
 
-boot_seekcare_b <- bootstrap(lmm_seekcare_b, fixef, type = "parametric", B = 10000)
+boot_seekcare_b   <- bootstrap(lmm_seekcare_b, fixef, type = "parametric", B = 10000)
 
 set.seed(1212)
 
-boot_change_a <- bootstrap(lmm_change_a, fixef, type = "parametric", B = 10000)
+boot_seekcare_2_a <- bootstrap(lmm_seekcare_a, fixef, type = "parametric", B = 10000)
 
 set.seed(1212)
 
-boot_change_b <- bootstrap(lmm_change_b, fixef, type = "parametric", B = 10000)
+boot_seekcare_2_b <- bootstrap(glmm_seekcare_b, fixef, type = "parametric", B = 10000)
 
 ##### Calculated bootstrapped indirect effects
 
 boot_seekcare_indirect <- 
   boot_seekcare_a$replicates$time_after * boot_seekcare_b$replicates$motivational_talk
 
-boot_change_indirect <- 
-  boot_change_a$replicates$time_after * boot_change_b$replicates$motivational_talk
+boot_seekcare_2_indirect <- 
+  boot_seekcare_2_a$replicates$time_after * boot_seekcare_2_b$replicates$motivational_talk
 
 #### Percentile confidence interval
 
-boot_seekcare_ci_perc <- quantile(boot_seekcare_indirect, c(.025, .975))
+boot_seekcare_ci_perc     <- quantile(boot_seekcare_indirect, c(.025, .975))
 
-boot_change_ci_perc   <- quantile(boot_change_indirect, c(.025, .975))
+boot_seekcare_2_ci_perc   <- quantile(boot_change_indirect, c(.025, .975))
 
 ### Dynamic risk (ACUTE-2007)
 
