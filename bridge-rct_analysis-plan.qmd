@@ -67,8 +67,8 @@ outcome in Study 1b).
 
 We will recruit participants until we have reached a total of N = 60 non-dropout
 participants for each study (Study 1b and Study 2b). For Study 1b, we define a
-"dropout" as someone who takes part in fewer than 2 weekly measurements. For
-Study 2b, we define a "dropout" as someone who takes part in fewer than 3 weekly
+"dropout" as someone who takes part in fewer than 1 weekly measurement. For
+Study 2b, we define a "dropout" as someone who takes part in fewer than 2 weekly
 measures.
 
 # Study 1b: Bridge
