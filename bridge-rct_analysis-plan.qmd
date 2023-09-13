@@ -77,9 +77,9 @@ measures.
 
 ### Treatment acceptance (care seeking)
 
-#### Rated willingness to seek treatment
+#### Rated motivation to seek treatment
 
-Ratings of willingness to seek treatment will be modeled with a linear mixed
+Ratings of motivation to seek treatment will be modeled with a linear mixed
 effects model, with a dummy coded treatment predictor (0 = waitlist, 1 = MI),
 indicating whether treatment has commenced, a time predictor (starting at 0, and
 counting each weekly measurement point), and a time-since-treatment predictor
@@ -92,7 +92,7 @@ the linear effect of spending time in the treatment.
 ### Motivation for change
 
 Responses on the Change Questionnaire will be modeled using a mixed-effects
-model like the one above used for rated willingness to seek treatment.
+model like the one above used for rated motivation to seek treatment.
 
 ## Secondary analyses
 
@@ -100,19 +100,19 @@ model like the one above used for rated willingness to seek treatment.
 
 Responses to the dichotomous question of whether the participant intents to seek
 treatment in the next month will be modeled using a mixed-effects model like the
-one above used for rated willingness to seek treatment. However, this model will
+one above used for rated motivation to seek treatment. However, this model will
 be a logistic regression, rather than a linear regression.
 
 ### Sexual urges (SSAS)
 
 Scores on the SSAS will be modeled using a mixed-effects model like the one
-above used for rated willingness to seek treatment.
+above used for rated motivation to seek treatment.
 
 ### CSAM usage
 
 Self-reported CSAM usage, measured by the SChiMRA+ (total number of reported
 hours per week), will be modeled using a mixed-effects model like the one above
-used for rated willingness to seek treatment.
+used for rated motivation to seek treatment.
 
 ### Depression (PHQ-9)
 
@@ -127,7 +127,7 @@ better fitting one.
 ### Mediating effect of MI on motivation to seek treatment through motivation to change
 
 We will examine the potential mediating role of motivation to change (Change
-Questionnaire) on willingness to seek care and whether the participants
+Questionnaire) on motivation to seek care and whether the participants
 indicates they are likely to actually seek care (dichotomous). To do so, we will
 take a mixed effects longitudinal mediation approach (similar to that of Park et
 al, 2017, 10.1037/dev0000235), wherein we will fit mixed effects models
@@ -143,12 +143,27 @@ centered for these models, in order to capture the within-person effects.
 ### Dynamic risk (ACUTE-2007)
 
 Scores on the ACUTE-2007 will be modeled using a mixed-effects model like the
-one above used for rated willingness to seek treatment.
+one above used for rated motivation to seek treatment.
 
 ### Hypersexuality (HBI-19)
 
 Scores on the HBI-19 are measured pre-treatment and post-treatment. These scores
 will be modeled with an approach like those used for the PHQ-9 scores above.
+
+### Moderating effect of autistic traits (RAADS-14) on treatment effectiveness
+
+We will examine the potential moderating role of autistic traits (measured by
+the RAADS-14, at baseline) on the effectiveness of the treatment on the primary
+outcomes (motivation to change and motivation to seek treatment). For each
+variable, we will fit two linear mixed effects models: in the first, we will add
+grand mean centered RAADS-14 sum scores as a predictor to the model used to
+assess the effect of the treatment on the primary outcomes (see above); in the
+second, we will add two-way interaction terms between RAADS-14 sum scores and
+the dummy coded treatment predictor (0 = waitlist, 1 = MI) and the
+time-since-treatment predictor (starting at 0, and counting up at each
+measurement point after treatment begins). For each outcome variable, we will
+compare the base model used to assess each outcome (see above) and these two
+additional models and retain the best performing model for interpretation.
 
 # Study 2b: ReDirection
 
@@ -173,19 +188,11 @@ linear effect of spending time in the treatment.
 Self-reported CSAM usage will be modeled using a mixed-effects model like the
 one above used for SSAS scores.
 
-### SChiMRA B (Behaviors against children)
+### SChiMRA B (Other behaviors related to sexual interest in children)
 
-#### Socialize
-
-Self-reported socialization with children (total number of hours in the last
-week) will be modeled using a mixed-effects model like the one above used for
-SSAS scores.
-
-#### Interact
-
-Self-reported interacting with children (total number of hours in the last
-week) will be modeled using a mixed-effects model like the one above used for
-SSAS scores.
+Self-reported interactingbehaviors related to sexual interest in children (total
+number of hours in the last week) will be modeled using a mixed-effects model
+like the one above used for SSAS scores.
 
 ### Depression (PHQ-9)
 
@@ -221,3 +228,17 @@ and counting up at each measurement point after treatment begins). We will then
 estimate the indirect effect of time-since-treatment through SSAS scores on CSAM
 usage, using parametric bootstrapping. The mediator will be person mean centered
 for these models, in order to capture the within-person effects.
+
+### Moderating effect of autistic traits (RAADS-14) on treatment effectiveness
+
+We will examine the potential moderating role of autistic traits (measured by
+the RAADS-14, at baseline) on the effectiveness of the treatment on the primary
+outcome (SSAS scores). We will fit two linear mixed effects models: in the
+first, we will add grand mean centered RAADS-14 sum scores as a predictor to the
+model used to assess the effect of the treatment on the primary outcomes (see
+above); in the second, we will add two-way interaction terms between RAADS-14
+sum scores and the dummy coded treatment predictor (0 = waitlist, 1 =
+ReDirection) and the time-since-treatment predictor (starting at 0, and counting
+up at each measurement point after treatment begins). We will compare the base
+model used to assess each outcome (see above) and these two additional models
+and retain the best performing model for interpretation.

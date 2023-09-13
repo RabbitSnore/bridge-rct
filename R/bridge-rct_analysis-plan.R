@@ -37,7 +37,7 @@ treat_structure <- data.frame(
   time_after = 1:measurements_k
 )
 
-# Power simulation -------------------------------------------------------------
+# Power simulation
 
 # Motivation to seek care
 
@@ -160,7 +160,7 @@ if (!file.exists("./output/bridge-rct_ssas_power-sim.rds")) {
 
 ### Treatment acceptance (care seeking)
 
-#### Rated willingness to seek treatment
+#### Rated motivation to seek treatment
 
 lmm_1b_seekcare_base <- lmer(treat_seeking
                              ~ 1
@@ -170,7 +170,7 @@ lmm_1b_seekcare_base <- lmer(treat_seeking
                              + (1 | id),
                              data = study_1b)
 
-### Motivation for change
+#### Motivation for change
 
 lmm_1b_change_base   <- lmer(change_sum
                              ~ 1
@@ -324,6 +324,58 @@ lmm_1b_hbi_int       <- lmer(hbi_sum
 
 lrt_1b_hib           <- anova(lmm_1b_hbi_base, lmm_1b_hbi_int)
 
+### Moderating effect of autistic traits (RAADS-14) on treatment effectiveness
+
+#### Rated motivation to seek treatment
+
+lmm_1b_seekcare_asd     <- lmer(treat_seeking
+                                ~ 1
+                                + mi_treat
+                                + time
+                                + time_after
+                                + raads_14_sum_mc # Grand mean centered
+                                + (1 | id),
+                                data = study_1b)
+
+lmm_1b_seekcare_asd_int <- lmer(treat_seeking
+                                ~ 1
+                                + time
+                                (+ mi_treat
+                                 + time_after
+                                 + raads_14_sum_mc)^2 # Grand mean centered
+                                + (1 | id),
+                                data = study_1b)
+
+#### Motivation for change
+
+lmm_1b_change_asd       <- lmer(change_sum
+                                ~ 1
+                                + mi_treat
+                                + time
+                                + time_after
+                                + raads_14_sum_mc # Grand mean centered
+                                + (1 | id),
+                                data = study_1b)
+
+lmm_1b_change_asd_int   <- lmer(change_sum
+                                ~ 1
+                                + time
+                                (+ mi_treat
+                                 + time_after
+                                 + raads_14_sum_mc)^2 # Grand mean centered
+                                + (1 | id),
+                                data = study_1b)
+
+#### Model comparisons
+
+lrt_asd_seekcare <- anova(lmm_1b_seekcare_base, 
+                          lmm_1b_seekcare_asd, 
+                          lmm_1b_seekcare_asd_int)
+
+lrt_asd_change   <- anova(lmm_1b_change_base,
+                          lmm_1b_change_asd,
+                          lmm_1b_change_asd_int)
+
 # Study 2b ---------------------------------------------------------------------
 
 ## Primary analyses
@@ -348,27 +400,17 @@ lmm_2b_csam_base     <- lmer(csam_sum
                              + (1 | id),
                              data = study_2b)
 
-### SChiMRA B (Behaviors against children)
+### SChiMRA B (Other behaviors related to sexual interest in children)
 
 #### Socialize
 
-lmm_2b_social_base     <- lmer(socialize_sum
-                               ~ 1
-                               + rd_treat
-                               + time
-                               + time_after
-                               + (1 | id),
-                               data = study_2b)
-
-#### Interact
-
-lmm_2b_interact_base <- lmer(interact_sum
-                             ~ 1
-                             + rd_treat
-                             + time
-                             + time_after
-                             + (1 | id),
-                             data = study_2b)
+lmm_2b_schimra_base   <- lmer(schimra_other_sum
+                              ~ 1
+                              + rd_treat
+                              + time
+                              + time_after
+                              + (1 | id),
+                              data = study_2b)
 
 ### Depression (PHQ-9)
 
@@ -377,14 +419,14 @@ lmm_2b_phq9_base     <- lmer(phq9_sum
                              + rd_treat
                              + pre_post
                              + (1 | id),
-                             data = study_1b)
+                             data = study_2b)
 
 lmm_2b_phq9_int      <- lmer(phq9_sum
                              ~ 1
                              + rd_treat
                              * pre_post
                              + (1 | id),
-                             data = study_1b)
+                             data = study_2b)
 
 lrt_2b_phq9          <- anova(lmm_2b_phq9_base, lmm_2b_phq9_int)
 
@@ -429,7 +471,7 @@ lmm_csam_a       <- lmer(ssas_sum_pmc # Person mean centered
                          + time_after
                          + ssas_sum
                          + (1 | id),
-                         data = study_1b)
+                         data = study_2b)
 
 lmm_csam_b       <- lmer(csam_sum
                          ~ 1
@@ -438,7 +480,7 @@ lmm_csam_b       <- lmer(csam_sum
                          + time_after
                          + ssas_sum_pmc
                          + (1 | id),
-                         data = study_1b)
+                         data = study_2b)
 
 #### Bootstrapping coefficients
 
@@ -458,3 +500,29 @@ boot_csam_indirect <-
 #### Percentile confidence interval
 
 boot_csam_ci_perc <- quantile(boot_csam_indirect, c(.025, .975))
+
+### Moderating effect of autistic traits (RAADS-14) on treatment effectiveness
+
+lmm_2b_ssas_asd     <- lmer(ssas_sum
+                            ~ 1
+                            + mi_treat
+                            + time
+                            + time_after
+                            + raads_14_sum_mc # Grand mean centered
+                            + (1 | id),
+                            data = study_2b)
+
+lmm_2b_ssas_asd_int <- lmer(ssas_sum
+                            ~ 1
+                            + time
+                            (+ mi_treat
+                             + time_after
+                             + raads_14_sum_mc)^2 # Grand mean centered
+                            + (1 | id),
+                            data = study_2b)
+
+#### Model comparisons
+
+lrt_asd_ssas <- anova(lmm_2b_ssas_base, 
+                      lmm_2b_ssas_asd, 
+                      lmm_2b_ssas_asd_int)
