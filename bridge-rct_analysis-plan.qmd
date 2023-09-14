@@ -212,7 +212,7 @@ one above used for SSAS scores.
 
 ### Hypersexuality (HBI-19)
 
-Scores on the PHQ-9 are measured pre-treatment and post-treatment. These scores
+Scores on the HBI-19 are measured pre-treatment and post-treatment. These scores
 will be modeled with an approach like those used for the PHQ-9 scores above.
 
 ### Mediating effect of treatment on CSAM usage through sexual urges (SSAS)
